@@ -13,6 +13,7 @@ export default function CreateProfilePage() {
 
   function onSubmit(e) {
     e.preventDefault();
+    setLoading(true);
 
     const fname = e.target.firstName.value;
     const lname = e.target.lastName.value;
@@ -22,7 +23,6 @@ export default function CreateProfilePage() {
       year:e.target.year.value
     }
 
-    setLoading(true);
 
     const rs = fetch(
       apiUrl1 + 'user/create',

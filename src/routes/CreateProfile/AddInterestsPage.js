@@ -22,13 +22,13 @@ export default function AddInterestsPage() {
 
   }
 
-  useEffect(() => {
-    first
+  // useEffect(() => {
+  //   first
   
-    return () => {
-      second
-    }
-  }, [])
+  //   return () => {
+  //     second
+  //   }
+  // }, [])
   
   // async function onSubmit(e) {
   //     try {

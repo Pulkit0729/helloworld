@@ -4,12 +4,14 @@ import SignUpLayout from '../Layouts/SignupLayout';
 
 export default function SignupPage() {
 
-  let [layout, setLayout] = useState(false);
-  function toogleState() {
-    layout ? setLayout(false) : setLayout(true);
+  let [profileLayout, setProfileLayout] = useState(false);
+  
+  function toggleLayout() {
+    profileLayout ? setProfileLayout(false) : setProfileLayout(true);
   }
+
   return (
-    !layout ? <SignUpLayout callback={toogleState}></SignUpLayout> : <CreateProfilePage></CreateProfilePage>
+    !profileLayout ? <SignUpLayout toggleLayout={toggleLayout}></SignUpLayout> : <CreateProfilePage></CreateProfilePage>
   )
 
 }

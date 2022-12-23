@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import base64 from 'base-64';
 import styled from 'styled-components';
-
-import { apiUrl1 } from '../logic/Constant';
 import { useNavigate } from "react-router-dom";
 import { StyledButton1, StyledButton3 } from '../Components/styled/Button';
 import { StyledSeparator } from '../Components/styled/Separator';
@@ -11,64 +8,36 @@ import { IconWrapper } from '../Components/styled/IconWrapper';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
 import { StyledInput } from '../Components/styled/StyledInput';
 import LoadingLayout from './LoadingLayout';
+import AuthApi from '../logic/API/Auth/auth.api.js';
 
-const Layout = styled.div`
-display: flex;
-flex-direction:column;
-align-items:center;
-width: 100%;
-height: 100%;
-padding: 2rem 1rem 0;
+const StyledSignLayout = styled.div`
+    display: flex;
+    flex-direction:column;
+    align-items:center;
+    width: 100%;
+    height: 100%;
+    padding: 2rem 1rem 0;
 
-.error{
-  color: ${({ theme }) => theme.errorCol};
-  font-weight: 300;
+    .error{
+    color: ${({ theme }) => theme.errorCol};
+    font-weight: 300;
 }
 `
 
-export default function SignUpLayout({ callback }) {
+export default function SignUpLayout({toggleLayout}) {
     let navigate = useNavigate();
     let [isLoading, setLoading] = useState(false);
+    let authApi = new AuthApi();
 
-    function onSubmit(e) {
+    async function onSubmit(e) {
         e.preventDefault();
-
-        const user = e.target.user.value;
-        const password = e.target.password.value;
-
+        const { user, password } = { user: e.target.user.value, password: e.target.password.value };
         setLoading(true);
-
-        const rs = fetch(
-            apiUrl1 + 'authorize/signup',
-            {
-                credentials: 'include', /*important*/
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Basic ' + base64.encode(user + ':' + password),
-                },
-                method: 'POST'
-            }
-        ).then(async (res) => {
-            const result = await res.json();
-            if (res.status === 200 && result.success) {
-                console.log('sucessfully created');
-                setLoading(false);
-
-                callback();
-            } else {
-                alert(result.msg)
-                setLoading(false);
-                console.log('error creating');
-            }
-        }).catch(err => {
-            setLoading(false);
-            console.log(err.message)
-        });
-
-
+        await authApi.postSignup(user, password, (err)=>{alert(err.msg)}, toggleLayout);
+        setLoading(false);
     }
     return (
-        isLoading ? <LoadingLayout /> : <Layout>
+        isLoading ? <LoadingLayout /> : <StyledSignLayout>
             <h1 className='primaryText mt-3'>Sign Up</h1>
             <div className="h-15"></div>
             <div className='w-100 align-items-center d-flex flex-column gap-4'>
@@ -90,7 +59,7 @@ export default function SignUpLayout({ callback }) {
                 </StyledButton3>
             </div>
             <button className='tertiaryText signup mt-auto pt-5' onClick={() => navigate(`/`)}>Already have an account? <span className='fw-bold'> Log In</span></button>
-        </Layout>
+        </StyledSignLayout>
     )
 }
 
